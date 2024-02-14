@@ -19,7 +19,7 @@ function Slider() {
     useEffect(() => {
         fetch("https://api.themoviedb.org/3/movie/now_playing?api_key=4d515835e70ed91238de09e575d7d8b2&language=en-US")
             .then(res => res.json())
-            .then(data => setContent(data.results.slice(0, 7)))
+            .then(data => setContent(data.results.slice(0, 10)))
             .catch(error => console.error("Error fetching movies:", error));
 
         fetch("https://api.themoviedb.org/3/genre/movie/list?api_key=4d515835e70ed91238de09e575d7d8b2&language=en-US")

@@ -33,7 +33,7 @@ function Videos({ title }) {
             <Slider {...setting} className="mx-[90px] mb-16">
                 {movies.map(movie => (
                     <div key={movie.id} className='p-[20px] relative'>
-                        <MovieTrailers movieId={movie.id} originalTitle={movie.original_title} />
+                        <MovieTrailers movieId={movie.id} originalTitle={movie.title} />
                     </div>
                 ))}
             </Slider>
@@ -61,7 +61,8 @@ function MovieTrailers({ movieId, originalTitle }) {
                             item.type === "Trailer" &&
                             item.site === "YouTube" &&
                             item.official === true &&
-                            item.name.includes("Official Trailer")
+                            item.name.includes("Official") &&
+                            item.name.includes("Trailer")
                         ) {
                             foundOfficialTrailer = true;
                             return true;
@@ -90,7 +91,7 @@ function MovieTrailers({ movieId, originalTitle }) {
                         className='w-[400px] h-[250px]' onMouseLeave={handleStop} onMouseEnter={handlePlay}
                         loading="lazy"
                         style={{ border: "none" }}
-                        src={`https://www.youtube.com/embed/${video.key}?autoplay=${play}&mute=1&controls=0&showinfo=0&autohide=1&loop=1`}
+                        src={`https://www.youtube.com/embed/${video.key}?autoplay=${play}&mute=1&controls=0&showinfo=0&autohide=1`}
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                     ></iframe>

@@ -13,7 +13,7 @@ function SlickSlider(props) {
     const setting = {
         dots: true,
         infinite: false,
-        slidesToShow: 7,
+        slidesToShow: 8,
         slidesToScroll: 5
     }
 
@@ -29,7 +29,7 @@ function SlickSlider(props) {
             }
         };
 
-        const api = links[selectedCategory][props.title]; // Select API based on props
+        const api = links[selectedCategory][props.title];
         fetch(api)
             .then(res => res.json())
             .then(data => setContent(data.results))
@@ -60,7 +60,7 @@ function SlickSlider(props) {
             <Slider {...setting} className="mx-[90px] mb-16">
                 {content.map(media => (
                     <div key={media.id} className='p-[20px] relative'>
-                        <img className='h-[310px] w-full object-cover object-top rounded-tr-md rounded-tl-md' src={`https://image.tmdb.org/t/p/original/${media.poster_path}`} alt={media.original_title || media.original_name} />
+                        <img className='h-[290px] w-full object-cover object-top rounded-tr-md rounded-tl-md' src={`https://image.tmdb.org/t/p/original/${media.poster_path}`} alt={media.original_title || media.original_name} />
                         <div className="h-[100px] w-full bg-gray_default rounded-bl-md rounded-br-md p-2 text-white flex flex-col">
                             <div className="flex items-center mb-1">
                                 <Star className="text-yellow-500 mr-1" />

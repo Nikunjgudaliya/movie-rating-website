@@ -3,7 +3,7 @@ import { Facebook, Google, Twitter, YouTube } from '@mui/icons-material';
 
 export default function Footer() {
     return (
-        <div className="mt-[100px] text-center">
+        <div className=" mt-[100px] text-center">
             <div className="text-[50px] font-bold mb-[25px]">
                 MovieSaga
             </div>
@@ -16,7 +16,9 @@ export default function Footer() {
                 <Twitter className='mr-4' style={{ fontSize: "40px" }} />
                 <YouTube className='mr-4' style={{ fontSize: "40px" }} />
             </div>
-            <p>© Movie Saga. All rights reserved.</p>
+            <div className='pb-4'>
+                <p>© Movie Saga. All rights reserved.</p>
+            </div>
         </div>
     )
 }

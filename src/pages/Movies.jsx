@@ -1,8 +1,10 @@
+import Page from "../components/Page";
+
+
 function Movies() {
     return (
         <div>
-
-            <h1>Movies Page</h1>
+            <Page title="Movies" />
         </div>
     );
 }

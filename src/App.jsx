@@ -12,18 +12,16 @@ import SignUp from './pages/Signup';
 function App() {
   return (
     <Router>
-      <div className="bg-black max-h-screen text-white">
-        <Navbar />
-        <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route path="/movies" element={<Movies />} />
-          <Route path="/tv-series" element={<Series />} />
-          <Route path="/trending" element={<Trending />} />
-          <Route path="/top-rated" element={<TopRated />} />
-          <Route path="/signin" element={<SignIn />} />
-          <Route path='/signup' element={<SignUp />} />
-        </Routes>
-      </div>
+      <Navbar />
+      <Routes>
+        <Route exact path="/" element={<Home />} />
+        <Route path="/movies" element={<Movies />} />
+        <Route path="/tv-series" element={<Series />} />
+        <Route path="/trending" element={<Trending />} />
+        <Route path="/top-rated" element={<TopRated />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path='/signup' element={<SignUp />} />
+      </Routes>
     </Router>
   );
 }
