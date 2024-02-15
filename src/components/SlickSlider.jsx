@@ -13,7 +13,7 @@ function SlickSlider(props) {
     const setting = {
         dots: true,
         infinite: false,
-        slidesToShow: 8,
+        slidesToShow: 7,
         slidesToScroll: 5
     }
 
