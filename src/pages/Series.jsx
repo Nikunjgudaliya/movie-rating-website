@@ -1,8 +1,9 @@
+import Page from "../components/Page";
+
 function Series() {
     return (
         <div>
-
-            <h1>Series Page</h1>
+            <Page title="TV Series" />
         </div>
     );
 }

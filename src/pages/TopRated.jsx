@@ -1,7 +1,9 @@
+import Page from "../components/Page";
+
 function TopRated() {
     return (
         <div>
-            Top Rated
+            <Page title="Top Rated" />
         </div>
     )
 }

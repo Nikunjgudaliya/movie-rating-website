@@ -1,8 +1,9 @@
+import Page from "../components/Page";
+
 function Trending() {
     return (
         <div>
-
-            <h1>Trending Page</h1>
+            <Page title="Trending" />
         </div>
     );
 }

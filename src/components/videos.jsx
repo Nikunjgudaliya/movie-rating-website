@@ -88,7 +88,7 @@ function MovieTrailers({ movieId, originalTitle }) {
             {trailer.map(video => (
                 <div key={video.id} className='relative h-fit w-fit' >
                     <iframe
-                        className='w-[400px] h-[250px]' onMouseLeave={handleStop} onMouseEnter={handlePlay}
+                        className='w-[400px] h-[250px] p-[25px] ' onMouseLeave={handleStop} onMouseEnter={handlePlay}
                         loading="lazy"
                         style={{ border: "none" }}
                         src={`https://www.youtube.com/embed/${video.key}?autoplay=${play}&mute=1&controls=0&showinfo=0&autohide=1`}
