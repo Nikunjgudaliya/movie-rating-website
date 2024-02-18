@@ -10,12 +10,15 @@ function ShowMore() {
     const [content, setContent] = useState({});
     const [year, setYear] = useState('');
     const [cast, setCast] = useState([]);
+    const [crew, setCrew] = useState([]);
+    const [trailerKey, setTrailerKey] = useState('');
 
     useEffect(() => {
         const apiUrl = mediaType === 'movie'
             ? `https://api.themoviedb.org/3/movie/${id}?api_key=4d515835e70ed91238de09e575d7d8b2`
             : `https://api.themoviedb.org/3/tv/${id}?api_key=4d515835e70ed91238de09e575d7d8b2`;
         const castUrl = `https://api.themoviedb.org/3/${mediaType}/${id}/credits?api_key=4d515835e70ed91238de09e575d7d8b2&language=en-US`;
+        const videoUrl = `https://api.themoviedb.org/3/${mediaType}/${id}/videos?api_key=4d515835e70ed91238de09e575d7d8b2&language=en-US`;
 
         fetch(apiUrl)
             .then(response => response.json())
@@ -32,9 +35,24 @@ function ShowMore() {
         fetch(castUrl)
             .then(response => response.json())
             .then(data => {
+                setCrew(data.crew);
                 setCast(data.cast.slice(0, 7));
             })
             .catch(error => console.error('Error fetching credits:', error));
+
+        fetch(videoUrl)
+            .then(response => response.json())
+            .then(data => {
+                const foundOfficialTrailer = data.results.find(item => (
+                    item.type === "Trailer" &&
+                    item.site === "YouTube" &&
+                    item.official === true
+                ));
+                if (foundOfficialTrailer) {
+                    setTrailerKey(foundOfficialTrailer.key);
+                }
+            })
+            .catch(error => console.error('Error fetching trailer:', error));
     }, [id, mediaType]);
 
     return (
@@ -65,7 +83,12 @@ function ShowMore() {
                 </div>
                 <div className="flex mb-[30px]">
                     <img className='h-[480px] w-[340px] object-cover object-top rounded-lg mr-[40px]' src={`https://image.tmdb.org/t/p/original/${content.poster_path}`} alt="Poster" />
-                    <img className='h-[480px] w-[100%] object-cover object-top rounded-lg' src={`https://image.tmdb.org/t/p/original/${content.backdrop_path}`} alt="Backdrop" />
+                    {trailerKey ? (
+                        <iframe className='h-[480px] w-[100%] object-cover object-top rounded-lg' src={`https://www.youtube.com/embed/${trailerKey}`} title="Trailer" allowFullScreen></iframe>
+                    ) : (
+                        <img className='h-[480px] w-[100%] object-cover object-top rounded-lg' src={`https://image.tmdb.org/t/p/original/${content.backdrop_path}`} alt="Backdrop" />
+                    )}
+
                 </div>
                 <div>
                     <div className="mb-4 flex gap-2">
@@ -87,10 +110,10 @@ function ShowMore() {
                                 <hr />
                                 <div className='flex text-[15px] my-2'>
                                     <div className='font-bold mr-4'>
-                                        Creators :
+                                        Director:
                                     </div>
                                     <div>
-                                        {content.created_by?.length > 0 ? content.created_by.map(creator => creator.name).join(', ') : "NA"}
+                                        {crew.find(member => member.known_for_department === 'Directing')?.name || "NA"}
                                     </div>
                                 </div>
                                 <hr />
