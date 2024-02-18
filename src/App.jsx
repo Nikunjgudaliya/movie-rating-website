@@ -8,6 +8,7 @@ import TopRated from './pages/TopRated';
 import Series from './pages/Series';
 import SignIn from './pages/Signin';
 import SignUp from './pages/Signup';
+import ShowMore from './pages/ShowMore';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/top-rated" element={<TopRated />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path='/signup' element={<SignUp />} />
+        <Route path="/:mediaType/:id" element={<ShowMore />} />
       </Routes>
     </Router>
   );

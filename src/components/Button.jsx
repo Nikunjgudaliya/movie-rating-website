@@ -6,7 +6,7 @@ function Button(props) {
 
     return (
         <div>
-            <button type="submit" className={`${fitClass} bg-${props.bgColor} text-${props.textColor} ${borderClass} rounded-md flex justify-center items-center`}>
+            <button type="submit" className={`${fitClass} bg-${props.bgColor} text-${props.textColor} ${borderClass} rounded-[4px] flex justify-center items-center`}>
                 {props.name}
             </button>
         </div>

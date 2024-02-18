@@ -4,6 +4,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useEffect, useState } from 'react';
 import Button from './Button';
 import { StarBorderOutlined, Star } from '@mui/icons-material';
+import { NavLink } from 'react-router-dom';
 
 export default function Page(props) {
     const [genres, setGenres] = useState([]);
@@ -20,9 +21,6 @@ export default function Page(props) {
         if (selectedOption === 'all') {
             return 'All';
         }
-        else if (props.title == 'Trending') {
-            return 'All';
-        }
         else if (selectedOption === 'movie' || selectedOption === 'tv') {
             return selectedOption === 'movie' ? 'Movie' : 'TV Series';
         }
@@ -31,10 +29,18 @@ export default function Page(props) {
         }
     };
 
+    const setApi = (title) => {
+        if (title === 'Movie') {
+            return 'https://api.themoviedb.org/3/genre/movie/list?api_key=4d515835e70ed91238de09e575d7d8b2';
+        } else {
+            return 'https://api.themoviedb.org/3/genre/tv/list?api_key=4d515835e70ed91238de09e575d7d8b2';
+        }
+    }
+
 
     useEffect(() => {
         // Fetch genres from TMDb API
-        fetch('https://api.themoviedb.org/3/genre/movie/list?api_key=4d515835e70ed91238de09e575d7d8b2')
+        fetch(setApi(props.title))
             .then(response => response.json())
             .then(data => {
                 const genreNames = data.genres.map(genre => ({ id: genre.id, name: genre.name, selected: false }));
@@ -67,7 +73,7 @@ export default function Page(props) {
         const languageCodes = selectedLanguages.filter(language => language.selected).map(language => language.iso_639_1).join(',');
 
         const links = {
-            "Movies": `https://api.themoviedb.org/3/discover/movie?api_key=4d515835e70ed91238de09e575d7d8b2&with_genres=${genreIds}&with_original_language=${languageCodes}&page=${page}`,
+            "Movie": `https://api.themoviedb.org/3/discover/movie?api_key=4d515835e70ed91238de09e575d7d8b2&with_genres=${genreIds}&with_original_language=${languageCodes}&page=${page}`,
             "TV Series": `https://api.themoviedb.org/3/discover/tv?api_key=4d515835e70ed91238de09e575d7d8b2&include_adult=false&include_null_first_air_dates=false&with_genres=${genreIds}&with_original_language=${languageCodes}&page=${page}&sort_by=popularity.desc`,
             "Trending": `https://api.themoviedb.org/3/trending/${selectedOption}/day?api_key=4d515835e70ed91238de09e575d7d8b2&language=en-US&page=${page}`,
             "Top Rated": `https://api.themoviedb.org/3/${selectedOption}/top_rated?api_key=4d515835e70ed91238de09e575d7d8b2&language=en-US&page=${page}`
@@ -117,18 +123,32 @@ export default function Page(props) {
     }
 
     const handleOptionClick = (option) => {
-
         setSelectedOption(option);
         setPage(1);
         setExpanded(false);
     };
+
+    function handleType() {
+        if (selectedOption == 'movie') {
+            if (props.title == 'TV Series') {
+                return 'tv'
+            }
+            return 'movie'
+        }
+        else if (selectedOption == 'tv') {
+            return 'tv'
+        }
+        else {
+            return props.title.toLowerCase()
+        }
+    }
 
     return (
         <>
             <div className='mx-[80px]'>
                 <p className='text-[34px] mb-8'> Explore {props.title} </p>
                 <div className="flex mb-8">
-                    {["Movies", "TV Series"].includes(props.title) && (
+                    {["Movie", "TV Series"].includes(props.title) && (
                         <>
                             <div className='mr-4'>
                                 <Accordion sx={{ backgroundColor: '#202020', color: 'white', width: '300px' }}>
@@ -209,17 +229,19 @@ export default function Page(props) {
 
                 <div className="grid grid-cols-7 gap-6">
                     {mediaData.map(media => (
-                        <div key={media.id} className='relative w-[200px]'>
-                            <img className='h-[290px] w-full object-cover object-top rounded-tr-md rounded-tl-md' src={`https://image.tmdb.org/t/p/original/${media.poster_path}`} alt={media.title} />
-                            <div className="h-[100px] w-full bg-gray_default rounded-bl-md rounded-br-md p-2 text-white flex flex-col">
-                                <div className="flex items-center mb-1">
-                                    <Star className="text-yellow-500 mr-1" />
-                                    <span className="text-sm mr-1">{media.vote_average.toFixed(1)}</span>
-                                    <StarBorderOutlined className="text-blue-500 ml-auto" />
+                        <NavLink key={media.id} to={`/${media.media_type ? media.media_type : handleType()}/${media.id}`}>
+                            <div className='relative w-[200px]'>
+                                <img className='h-[290px] w-full object-cover object-top rounded-tr-md rounded-tl-md' src={`https://image.tmdb.org/t/p/original/${media.poster_path}`} alt={media.title} />
+                                <div className="h-[100px] w-full bg-gray_default rounded-bl-md rounded-br-md p-2 text-white flex flex-col">
+                                    <div className="flex items-center mb-1">
+                                        <Star className="text-yellow-500 mr-1" />
+                                        <span className="text-sm mr-1">{media.vote_average.toFixed(1)}</span>
+                                        <StarBorderOutlined className="text-blue-500 ml-auto" />
+                                    </div>
+                                    <p className="text-md font-bold">{media.title || media.name}</p>
                                 </div>
-                                <p className="text-md font-bold">{media.title || media.name}</p>
                             </div>
-                        </div>
+                        </NavLink>
                     ))}
                 </div>
             </div>

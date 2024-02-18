@@ -4,6 +4,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { useState, useEffect } from "react";
 import Button from '../components/Button';
 import { Star } from '@mui/icons-material';
+import { Link } from 'react-router-dom';
 
 function Slider() {
     const [content, setContent] = useState([]);
@@ -40,7 +41,7 @@ function Slider() {
                 {content.map(movie => (
                     <div key={movie.id} className='p-[20px]'>
                         <div className="relative">
-                            <img className='h-[700px] w-full object-cover object-top rounded-lg' src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`} alt={movie.original_title} />
+                            <img className='h-[700px] w-full object-cover object-top rounded-lg md:brightness-75' src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`} alt={movie.original_title} />
                             <div className="absolute bottom-[70px] left-[120px]">
                                 <h2 className='text-white mb-2 text-[70px] font-bold'>{movie.title}</h2>
                                 <ul className='flex text-white text-xl mb-4'>
@@ -54,7 +55,9 @@ function Slider() {
                                         <Button key={genreId} name={genres[genreId]} bgColor='transparent' textColor='yellow_default' borderColor='yellow_default' fit='fit' />
                                     ))}
                                 </div>
-                                <Button name="SHOW MORE" bgColor='yellow_default' textColor='black' />
+                                <Link to={`/movie/${movie.id}`} className="inline-block">
+                                    <Button name="SHOW MORE" bgColor='yellow_default' textColor='black' />
+                                </Link>
                             </div>
                         </div>
                     </div>
