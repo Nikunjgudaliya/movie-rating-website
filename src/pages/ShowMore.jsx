@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import Button from "../components/Button";
 import Footer from "../components/Footer";
 import { Star, StarBorderOutlined } from "@mui/icons-material";
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import axios from 'axios';
 
 function ShowMore() {
@@ -71,9 +72,12 @@ function ShowMore() {
                             <ul className="flex">
                                 <li><Star className="text-yellow-500 pb-2" style={{ fontSize: "40px" }} /></li>
                                 <li>{content.vote_average ? content.vote_average.toFixed(1) : 'NA'}</li>
-                                <li><span className="text-[20px] text-gray-400 mr-10">/10</span></li>
-                                <li><StarBorderOutlined className="text-blue-500 ml-auto" /></li>
-                                <li><span className="text-blue-500 text-[20px]">Rate</span></li>
+                                <li><span className="text-[20px] text-gray-400 mr-6">/10</span></li>
+                                <div className='cursor-pointer flex'>
+                                    <li><StarBorderOutlined className="text-blue-500 ml-auto" /></li>
+                                    <li><span className="text-blue-500 text-[20px]">Rate</span></li>
+                                </div>
+
                             </ul>
                         </div>
                     </div>
@@ -85,7 +89,6 @@ function ShowMore() {
                     ) : (
                         <img className='h-[480px] w-[100%] object-cover object-top rounded-lg' src={`https://image.tmdb.org/t/p/original/${content.backdrop_path}`} alt="Backdrop" />
                     )}
-
                 </div>
                 <div>
                     <div className="mb-4 flex gap-2">
@@ -192,6 +195,83 @@ function ShowMore() {
                                 {(content.episode_run_time || content.runtime) != "" ? (content.episode_run_time || content.runtime) + ' min' : "NA min"}
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div className='relative  w-[75%] mt-10'>
+                    <div className='flex items-center mb-10'>
+                        <div className="bottom-0 left-0 p-2 border-l-4 border-yellow_default flex items-center">
+                            <span className="ml-2 mr-1 font-bold text-[23px]">Reviews</span>
+                            <ArrowForwardIosIcon sx={{ fontSize: "26px" }} className="arrow" />
+                        </div>
+                        <div className='absolute right-0'>
+                            <Button name='Give Review' bgColor='blue-600' />
+                        </div>
+                    </div>
+                    <div className='mb-5 '>
+                        <div className='flex'>
+                            <div className='p-6 bg-orange-500 h-[50px] w-[50px] text-center flex items-center justify-center rounded-full mr-4'>
+                                F
+                            </div>
+                            <div>
+                                <div className='font-bold text-[17px]'>
+                                    Floch Forster {/* user name will be shown here */}
+                                </div>
+                                <div className=' text-[14px] text-gray-400 mb-3'>
+                                    January 7, 2024{/* data when review is given will be shown here */}
+                                </div>
+                            </div>
+                        </div>
+                        <div className='flex mb-3'>
+                            <Star className="text-yellow-500" />
+                            <Star className="text-yellow-500" />
+                            <Star className="text-yellow-500" />
+                            <Star className="text-yellow-500" />
+                            <Star className="text-yellow-500" />
+                            <Star className="text-yellow-500" />
+                            <Star className="text-yellow-500" />
+                            <Star className="text-yellow-500" />
+                            <Star className="text-yellow-500" />
+                            <Star className="text-yellow-500" />
+                        </div>
+                        <div>
+                            He was the best guy around {/* Reviews are shown here*/}
+                            <hr />
+                        </div>
+                    </div>
+                    <div className='mb-5 '>
+                        <div className='flex'>
+                            <div className='p-6 bg-orange-900 h-[50px] w-[50px] text-center flex items-center justify-center rounded-full mr-4'>
+                                R
+                            </div>
+                            <div>
+                                <div className='font-bold text-[17px]'>
+                                    Reiner Braun {/* user name will be shown here */}
+                                </div>
+                                <div className=' text-[14px] text-gray-400 mb-3'>
+                                    January 8, 2024{/* data when review is given will be shown here */}
+                                </div>
+                            </div>
+                        </div>
+                        <div className='flex mb-3'>
+                            <Star className="text-yellow-500" />
+                            <Star className="text-yellow-500" />
+                            <StarBorderOutlined className='text-yellow-500' />
+                            <StarBorderOutlined className='text-yellow-500' />
+                            <StarBorderOutlined className='text-yellow-500' />
+                            <StarBorderOutlined className='text-yellow-500' />
+                            <StarBorderOutlined className='text-yellow-500' />
+                            <StarBorderOutlined className='text-yellow-500' />
+                            <StarBorderOutlined className='text-yellow-500' />
+                            <StarBorderOutlined className='text-yellow-500' />
+
+                        </div>
+                        <div>
+                            What about the people he.....? {/* Reviews are shown here*/}
+                            <hr />
+                        </div>
+                    </div>
+                    <div className='flex justify-center' >
+                        <Button name='Show More' bgColor='blue-600' />
                     </div>
                 </div>
                 <Footer />

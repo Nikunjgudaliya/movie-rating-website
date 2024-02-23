@@ -14,7 +14,7 @@ function Button(props) {
 }
 
 Button.propTypes = {
-    name: PropTypes.string.isRequired,
+    name: PropTypes.string,
     bgColor: PropTypes.string,
     textColor: PropTypes.string,
     height: PropTypes.number,

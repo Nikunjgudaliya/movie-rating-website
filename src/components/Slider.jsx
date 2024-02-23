@@ -24,7 +24,7 @@ function Slider() {
             .then(res => setContent(res.data.results.slice(0, 10)))
             .catch(error => console.error("Error fetching movies:", error));
 
-        axios.get("https://api.themoviedb.org/3/genre/movie/list?api_key=4d515835e70ed91238de09e575d7d8b2&language=en-US")
+        axios.get("https://api.themoviedb.org/3/genre/tv/list?api_key=4d515835e70ed91238de09e575d7d8b2&language=en-US")
             .then(res => {
                 const genreMap = {};
                 res.data.genres.forEach(genre => {
@@ -48,14 +48,14 @@ function Slider() {
                                     <li className='mr-1'><Star className="text-yellow-500 mr-1" style={{ fontSize: "30px" }} /></li>
                                     <li className='mr-5'>{movie.vote_average.toFixed(1)}</li>
                                     <li className='mr-5'>|</li>
-                                    <li>{movie.release_date}</li>
+                                    <li>{movie.release_date || movie.first_air_date}</li>
                                 </ul>
                                 <div className='mb-4 flex gap-2'>
                                     {movie.genre_ids.map(genreId => (
                                         <Button key={genreId} name={genres[genreId]} bgColor='transparent' textColor='yellow_default' borderColor='yellow_default' fit='fit' />
                                     ))}
                                 </div>
-                                <Link to={`/movie/${movie.id}`} className="inline-block">
+                                <Link to={`/tv/${movie.id}`} className="inline-block">
                                     <Button name="SHOW MORE" bgColor='yellow_default' textColor='black' />
                                 </Link>
                             </div>

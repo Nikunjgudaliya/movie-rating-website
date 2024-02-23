@@ -204,18 +204,18 @@ export default function Page(props) {
                         <>
                             <div className='mr-4'>
                                 <Accordion sx={{ backgroundColor: '#202020', color: 'white', width: '300px' }} expanded={expanded} onChange={() => setExpanded(!expanded)}>
-                                    <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}>
+                                    <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white', cursor: 'pointer' }} />}>
                                         {type()}
                                     </AccordionSummary>
                                     {["Trending"].includes(props.title) && (
-                                        <AccordionDetails style={{ height: 'auto', overflowY: 'auto' }}>
+                                        <AccordionDetails style={{ height: 'auto', overflowY: 'auto', cursor: 'pointer' }}>
                                             <div onClick={() => handleOptionClick('all')}>All</div>
                                         </AccordionDetails>
                                     )}
-                                    <AccordionDetails style={{ height: 'auto', overflowY: 'auto' }}>
+                                    <AccordionDetails style={{ height: 'auto', overflowY: 'auto', cursor: 'pointer' }}>
                                         <div onClick={() => handleOptionClick('movie')}>Movies</div>
                                     </AccordionDetails>
-                                    <AccordionDetails style={{ height: 'auto', overflowY: 'auto' }}>
+                                    <AccordionDetails style={{ height: 'auto', overflowY: 'auto', cursor: 'pointer' }}>
                                         <div onClick={() => handleOptionClick('tv')}>TV Series</div>
                                     </AccordionDetails>
                                 </Accordion>
