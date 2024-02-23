@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import axios from "axios";
 
 function SlickSlider(props) {
     const [content, setContent] = useState([]);
@@ -15,7 +16,7 @@ function SlickSlider(props) {
         dots: true,
         infinite: false,
         slidesToShow: 7,
-        slidesToScroll: 5
+        slidesToScroll: 5,
     }
 
     useEffect(() => {
@@ -31,9 +32,8 @@ function SlickSlider(props) {
         };
 
         const api = links[selectedCategory][props.title];
-        fetch(api)
-            .then(res => res.json())
-            .then(data => setContent(data.results))
+        axios.get(api)
+            .then(res => setContent(res.data.results))
             .catch(error => console.error("Error fetching movies:", error));
     }, [props.title, selectedCategory]);
 

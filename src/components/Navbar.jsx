@@ -3,6 +3,7 @@ import { IconButton } from '@mui/material';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import '../css/Navbar.css';
+import axios from 'axios';
 
 function Navbar() {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -22,10 +23,9 @@ function Navbar() {
     useEffect(() => {
         if (searchQuery.trim() !== '') {
 
-            fetch(`https://api.themoviedb.org/3/search/multi?query=${searchQuery}&api_key=4d515835e70ed91238de09e575d7d8b2`)
-                .then(response => response.json())
-                .then(data => {
-                    setSearchResults(data.results);
+            axios.get(`https://api.themoviedb.org/3/search/multi?query=${searchQuery}&api_key=4d515835e70ed91238de09e575d7d8b2`)
+                .then(response => {
+                    setSearchResults(response.data.results);
                 })
                 .catch(error => console.error('Error fetching search results:', error));
         } else {
@@ -52,7 +52,7 @@ function Navbar() {
     }, [location]);
 
     return (
-        <nav className="h-[100px] bg-black flex items-center justify-between px-20 py-10 mb-[30px] sticky top-0 z-10">
+        <nav className="h-[100px] w-full bg-black flex items-center justify-between px-20 py-10 mb-[30px] sticky top-0 z-10">
             <div className="flex items-center">
                 <div className="mr-[36px] font-bold">MovieSaga</div>
                 <ul className="flex space-x-[36px]">

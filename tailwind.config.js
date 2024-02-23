@@ -4,7 +4,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        yellow_default: "#ffff00",
+        yellow_default: "#F5C518",
+        // yellow_default: "#ffff00",
         gray_default: "#1A1A1A",
       },
     },

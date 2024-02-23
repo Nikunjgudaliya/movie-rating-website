@@ -1,5 +1,7 @@
 import { Facebook, Google } from '@mui/icons-material';
 import Checkbox from '@mui/material/Checkbox';
+import EmailIcon from '@mui/icons-material/Email';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import { yellow } from '@mui/material/colors';
 import { NavLink } from 'react-router-dom';
 import Button from '../components/Button';
@@ -10,11 +12,13 @@ function SignIn() {
             <div className="p-6 bg-transparent text-white">
                 <h2 className="text-[55px] font-bold text-center mb-16">LOGIN</h2>
                 <form className="flex flex-col items-center">
-                    <div className="mb-8">
-                        <input placeholder="Email" type="email" id="email" name="email" className="bg-transparent w-[340px] px-3 py-2 border-[2px] rounded-md text-white focus:outline-none focus:border-yellow-500 " />
+                    <div className="mb-8 relative">
+                        <EmailIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow_default" />
+                        <input placeholder="Email" type="email" id="email" name="email" className="bg-transparent w-[340px] px-3 py-2 border-[2px] rounded-md text-white focus:outline-none focus:border-yellow-500 text-center" />
                     </div>
-                    <div className="mb-8">
-                        <input placeholder="Password" type="password" id="password" name="password" className="bg-transparent w-[340px] px-3 py-2 border-[2px] rounded-md text-white focus:outline-none focus:border-yellow-500" />
+                    <div className="mb-8 relative">
+                        <VpnKeyIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow_default" />
+                        <input placeholder="Password" type="password" id="password" name="password" className="bg-transparent w-[340px] px-3 py-2 border-[2px] rounded-md text-white focus:outline-none focus:border-yellow-500 text-center" />
                     </div>
                     <div className="mb-5 flex items-center">
                         <Checkbox sx={{ color: yellow[500], '&.Mui-checked': { color: yellow[500], }, }} />

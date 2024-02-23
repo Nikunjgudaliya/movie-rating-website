@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import Button from './Button';
 import { StarBorderOutlined, Star } from '@mui/icons-material';
 import { NavLink } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Page(props) {
     const [genres, setGenres] = useState([]);
@@ -40,19 +41,17 @@ export default function Page(props) {
 
     useEffect(() => {
         // Fetch genres from TMDb API
-        fetch(setApi(props.title))
-            .then(response => response.json())
-            .then(data => {
-                const genreNames = data.genres.map(genre => ({ id: genre.id, name: genre.name, selected: false }));
+        axios.get(setApi(props.title))
+            .then(response => {
+                const genreNames = response.data.genres.map(genre => ({ id: genre.id, name: genre.name, selected: false }));
                 setGenres(genreNames);
             })
             .catch(error => console.error('Error fetching genres:', error));
 
         // Fetch languages from TMDb API
-        fetch('https://api.themoviedb.org/3/configuration/languages?api_key=4d515835e70ed91238de09e575d7d8b2')
-            .then(response => response.json())
-            .then(data => {
-                const filteredLanguages = data.filter(language =>
+        axios.get('https://api.themoviedb.org/3/configuration/languages?api_key=4d515835e70ed91238de09e575d7d8b2')
+            .then(response => {
+                const filteredLanguages = response.data.filter(language =>
                     ['English', 'Hindi', 'French', 'Korean', 'Japanese', 'Gujarati', 'Spanish', 'Italian'].includes(language.english_name)
                 );
                 setLanguages(filteredLanguages);
@@ -82,15 +81,14 @@ export default function Page(props) {
         const api = links[props.title];
 
         // Fetch movie data from TMDb API based on selected genres and languages
-        fetch(api)
-            .then(response => response.json())
-            .then(data => {
+        axios.get(api)
+            .then(response => {
                 if (loadMoreClicked && page !== 1) {
                     // If Load More button is clicked and it's not the first page, append new data
-                    setMediaData(prevMediaData => [...prevMediaData, ...data.results]);
+                    setMediaData(prevMediaData => [...prevMediaData, ...response.data.results]);
                 } else {
                     // Otherwise, replace existing data with new data
-                    setMediaData(data.results);
+                    setMediaData(response.data.results);
                 }
             })
             .catch(error => console.error('Error fetching media data:', error));

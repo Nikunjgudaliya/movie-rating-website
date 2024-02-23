@@ -4,6 +4,7 @@ import Slider from "react-slick";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import axios from 'axios';
 
 function Videos({ title }) {
     const [movies, setMovies] = useState([]);
@@ -16,9 +17,10 @@ function Videos({ title }) {
     }
 
     useEffect(() => {
-        fetch("https://api.themoviedb.org/3/movie/upcoming?api_key=4d515835e70ed91238de09e575d7d8b2&language=en-US&page=1")
-            .then(res => res.json())
-            .then(data => setMovies(data.results))
+        axios.get("https://api.themoviedb.org/3/movie/upcoming?api_key=4d515835e70ed91238de09e575d7d8b2&language=en-US&page=1")
+            .then(res => {
+                setMovies(res.data.results)
+            })
             .catch(error => console.error("Error fetching movies:", error));
     }, []);
 

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import Button from "../components/Button";
 import Footer from "../components/Footer";
 import { Star, StarBorderOutlined } from "@mui/icons-material";
-
+import axios from 'axios';
 
 function ShowMore() {
     const { mediaType, id } = useParams();
@@ -20,11 +20,10 @@ function ShowMore() {
         const castUrl = `https://api.themoviedb.org/3/${mediaType}/${id}/credits?api_key=4d515835e70ed91238de09e575d7d8b2&language=en-US`;
         const videoUrl = `https://api.themoviedb.org/3/${mediaType}/${id}/videos?api_key=4d515835e70ed91238de09e575d7d8b2&language=en-US`;
 
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                setContent(data);
-                const releaseDate = data.first_air_date || data.release_date;
+        axios.get(apiUrl)
+            .then(response => {
+                setContent(response.data);
+                const releaseDate = response.data.first_air_date || response.data.release_date;
                 if (releaseDate) {
                     const year = new Date(releaseDate).getFullYear();
                     setYear(year);
@@ -32,18 +31,16 @@ function ShowMore() {
             })
             .catch(error => console.error('Error fetching media details:', error));
 
-        fetch(castUrl)
-            .then(response => response.json())
-            .then(data => {
-                setCrew(data.crew);
-                setCast(data.cast.slice(0, 7));
+        axios.get(castUrl)
+            .then(response => {
+                setCrew(response.data.crew);
+                setCast(response.data.cast.slice(0, 7));
             })
             .catch(error => console.error('Error fetching credits:', error));
 
-        fetch(videoUrl)
-            .then(response => response.json())
-            .then(data => {
-                const foundOfficialTrailer = data.results.find(item => (
+        axios.get(videoUrl)
+            .then(response => {
+                const foundOfficialTrailer = response.data.results.find(item => (
                     item.type === "Trailer" &&
                     item.site === "YouTube" &&
                     item.official === true
