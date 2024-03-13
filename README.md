@@ -9,5 +9,5 @@ Currently, two official plugins are available:
 
 Commands to run the project -
 
-> npm i
+> npm i --force
 > npm run dev

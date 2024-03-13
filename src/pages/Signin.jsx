@@ -5,20 +5,47 @@ import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import { yellow } from '@mui/material/colors';
 import { NavLink } from 'react-router-dom';
 import Button from '../components/Button';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import axios from 'axios';
 
 function SignIn() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        axios.post("http://localhost:3000/signin", { email, password })
+            .then(response => {
+                if (response.status === 200) {
+                    // Successful login
+                    navigate('/');
+                } else {
+                    // Handle login failure
+                    console.error('Login failed:', response.data.message);
+                    alert('Incorrect email or password. Please try again.');
+                }
+            })
+            .catch(error => {
+                // Handle network errors or other exceptions
+                console.error('Error logging in:', error);
+                alert('Error logging in. Please try again.');
+            });
+    };
+
     return (
         <div className="bg-black min-h-screen flex justify-center mt-5">
             <div className="p-6 bg-transparent text-white">
                 <h2 className="text-[55px] font-bold text-center mb-16">LOGIN</h2>
-                <form className="flex flex-col items-center">
+                <form className="flex flex-col items-center" onSubmit={handleSubmit}>
                     <div className="mb-8 relative">
                         <EmailIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow_default" />
-                        <input placeholder="Email" type="email" id="email" name="email" className="bg-transparent w-[340px] px-3 py-2 border-[2px] rounded-md text-white focus:outline-none focus:border-yellow-500 text-center" />
+                        <input placeholder="Email" type="email" id="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} className="bg-transparent w-[340px] px-3 py-2 border-[2px] rounded-md text-white focus:outline-none focus:border-yellow-500 text-center" />
                     </div>
                     <div className="mb-8 relative">
                         <VpnKeyIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow_default" />
-                        <input placeholder="Password" type="password" id="password" name="password" className="bg-transparent w-[340px] px-3 py-2 border-[2px] rounded-md text-white focus:outline-none focus:border-yellow-500 text-center" />
+                        <input placeholder="Password" type="password" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} className="bg-transparent w-[340px] px-3 py-2 border-[2px] rounded-md text-white focus:outline-none focus:border-yellow-500 text-center" />
                     </div>
                     <div className="mb-5 flex items-center">
                         <Checkbox sx={{ color: yellow[500], '&.Mui-checked': { color: yellow[500], }, }} />

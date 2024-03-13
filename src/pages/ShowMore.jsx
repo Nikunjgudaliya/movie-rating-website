@@ -5,6 +5,9 @@ import Footer from "../components/Footer";
 import { Star, StarBorderOutlined } from "@mui/icons-material";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import axios from 'axios';
+import { Dialog, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material';
+import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
+import StarIcon from '@mui/icons-material/Star';
 
 function ShowMore() {
     const { mediaType, id } = useParams();
@@ -13,6 +16,49 @@ function ShowMore() {
     const [cast, setCast] = useState([]);
     const [crew, setCrew] = useState([]);
     const [trailerKey, setTrailerKey] = useState('');
+    const [username, setUsername] = useState('abc');
+    const [open, setOpen] = useState(false);
+    const [rating, setRating] = useState(0);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleRate = async () => {
+        try {
+            await axios.post('http://localhost:3000/showmore', {
+                username: username,
+                rating: rating,
+                moviename: content.name || content.title,
+            });
+            alert("Rating added")
+            handleClose();
+        } catch (error) {
+            console.error('Error submitting rating:', error);
+        }
+    };
+
+    // Fetch username if user is authenticated
+    useEffect(() => {
+        // Fetch username from MongoDB or your authentication system
+        // Example endpoint: '/api/getUsername'
+        axios.get('/api/getUsername')
+            .then(response => {
+                setUsername(response.data.username || 'abc'); // Set username from response or default to 'abc'
+            })
+            .catch(error => {
+                console.error('Error fetching username:', error);
+            });
+    }, []);
+
+
+    const handleStarClick = (index) => {
+        setRating(index + 1);
+    };
 
     useEffect(() => {
         const apiUrl = mediaType === 'movie'
@@ -73,10 +119,29 @@ function ShowMore() {
                                 <li><Star className="text-yellow-500 pb-2" style={{ fontSize: "40px" }} /></li>
                                 <li>{content.vote_average ? content.vote_average.toFixed(1) : 'NA'}</li>
                                 <li><span className="text-[20px] text-gray-400 mr-6">/10</span></li>
-                                <div className='cursor-pointer flex'>
-                                    <li><StarBorderOutlined className="text-blue-500 ml-auto" /></li>
+                                <div className='cursor-pointer flex' onClick={handleClickOpen}>
+                                    <li><StarBorderOutlinedIcon className="text-blue-500 ml-auto" /></li>
                                     <li><span className="text-blue-500 text-[20px]">Rate</span></li>
                                 </div>
+
+                                <Dialog open={open} onClose={handleClose}>
+                                    <DialogTitle>Rate the Movie</DialogTitle>
+                                    <DialogContent>
+                                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                            {[...Array(10)].map((_, index) => (
+                                                <IconButton key={index} onClick={() => handleStarClick(index)}>
+                                                    {index < rating ? <StarIcon color="primary" /> : <StarBorderOutlinedIcon />}
+                                                </IconButton>
+                                            ))}
+                                        </div>
+                                        <Typography align="center" variant="subtitle1">
+                                            {rating === 0 ? 'Please select a rating' : `You rated: ${rating} out of 10`}
+                                        </Typography>
+                                    </DialogContent>
+                                    <div className='flex justify-center mb-6' onClick={handleRate}>
+                                        <Button name='Submit' bgColor='blue-600' textColor='white' />
+                                    </div>
+                                </Dialog>
 
                             </ul>
                         </div>
