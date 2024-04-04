@@ -19,16 +19,17 @@ function SignIn() {
         axios.post("http://localhost:3000/signin", { email, password })
             .then(response => {
                 if (response.status === 200) {
-                    // Successful login
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('username', response.data.username);
+                    localStorage.setItem('userId', response.data.userId);
                     navigate('/');
+                    window.location.reload();
                 } else {
-                    // Handle login failure
                     console.error('Login failed:', response.data.message);
                     alert('Incorrect email or password. Please try again.');
                 }
             })
             .catch(error => {
-                // Handle network errors or other exceptions
                 console.error('Error logging in:', error);
                 alert('Error logging in. Please try again.');
             });

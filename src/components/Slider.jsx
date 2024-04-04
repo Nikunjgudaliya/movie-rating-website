@@ -10,8 +10,10 @@ import axios from 'axios';
 function Slider() {
     const [content, setContent] = useState([]);
     const [genres, setGenres] = useState({});
+    const [loading, setLoading] = useState(true);
 
     const setting = {
+        autoplay: true,
         dots: true,
         arrows: true,
         infinite: true,
@@ -19,21 +21,28 @@ function Slider() {
 
     // Fetch movies and genres
     useEffect(() => {
-        // axios.get("https://api.themoviedb.org/3/movie/?api_key=4d515835e70ed91238de09e575d7d8b2&language=en-US")
-        axios.get("https://api.themoviedb.org/3/tv/top_rated?api_key=4d515835e70ed91238de09e575d7d8b2&language=en-US&page=1")
-            .then(res => setContent(res.data.results.slice(0, 10)))
+        axios.get("https://api.themoviedb.org/3/movie/now_playing?api_key=4d515835e70ed91238de09e575d7d8b2&region=IN")
+            .then(res => {
+                setContent(res.data.results.slice(0, 10));
+                setLoading(false);
+            })
             .catch(error => console.error("Error fetching movies:", error));
 
-        axios.get("https://api.themoviedb.org/3/genre/tv/list?api_key=4d515835e70ed91238de09e575d7d8b2&language=en-US")
+        axios.get("https://api.themoviedb.org/3/genre/movie/list?api_key=4d515835e70ed91238de09e575d7d8b2&language=en-US")
             .then(res => {
                 const genreMap = {};
                 res.data.genres.forEach(genre => {
                     genreMap[genre.id] = genre.name;
                 });
                 setGenres(genreMap);
+                setLoading(false);
             })
             .catch(error => console.error("Error fetching genres:", error));
     }, []);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <>
@@ -55,7 +64,8 @@ function Slider() {
                                         <Button key={genreId} name={genres[genreId]} bgColor='transparent' textColor='yellow_default' borderColor='yellow_default' fit='fit' />
                                     ))}
                                 </div>
-                                <Link to={`/tv/${movie.id}`} className="inline-block">
+
+                                <Link to={`/movie/${movie.id}`} className="inline-block">
                                     <Button name="SHOW MORE" bgColor='yellow_default' textColor='black' />
                                 </Link>
                             </div>

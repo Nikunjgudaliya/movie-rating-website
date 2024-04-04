@@ -18,19 +18,17 @@ function SignUp() {
         e.preventDefault();
         axios.post("http://localhost:3000/signup", { username, email, password })
             .then(response => {
-                // Check if user is successfully created
                 if (response.status === 201) {
-                    navigate('/signin'); // Navigate to signin page
+                    navigate('/signin');
+                    window.location.reload();
                 } else if (response.status === 400) {
-                    // User already exists, display error message if needed
-                    console.error('User already exists');
+                    console.error('User already exists.');
+                    alert('User already exists.');
                 } else {
-                    // Handle other status codes if needed
                     console.error('Unexpected response:', response);
                 }
             })
             .catch(error => {
-                // Handle error if the POST request fails
                 console.error('Error:', error);
             });
     };

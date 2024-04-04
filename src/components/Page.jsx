@@ -40,7 +40,7 @@ export default function Page(props) {
 
 
     useEffect(() => {
-        // Fetch genres from TMDb API
+        // Fetch genres from API
         axios.get(setApi(props.title))
             .then(response => {
                 const genreNames = response.data.genres.map(genre => ({ id: genre.id, name: genre.name, selected: false }));
@@ -48,7 +48,7 @@ export default function Page(props) {
             })
             .catch(error => console.error('Error fetching genres:', error));
 
-        // Fetch languages from TMDb API
+        // Fetch languages from API
         axios.get('https://api.themoviedb.org/3/configuration/languages?api_key=4d515835e70ed91238de09e575d7d8b2')
             .then(response => {
                 const filteredLanguages = response.data.filter(language =>
@@ -80,14 +80,12 @@ export default function Page(props) {
 
         const api = links[props.title];
 
-        // Fetch movie data from TMDb API based on selected genres and languages
+        // Fetch movie data from API based on selected genres and languages
         axios.get(api)
             .then(response => {
                 if (loadMoreClicked && page !== 1) {
-                    // If Load More button is clicked and it's not the first page, append new data
                     setMediaData(prevMediaData => [...prevMediaData, ...response.data.results]);
                 } else {
-                    // Otherwise, replace existing data with new data
                     setMediaData(response.data.results);
                 }
             })
@@ -99,7 +97,6 @@ export default function Page(props) {
         updatedGenres[index].selected = !updatedGenres[index].selected;
         setGenres(updatedGenres);
         setSelectedGenres(updatedGenres);
-        // Reset Load More clicked status
         setLoadMoreClicked(false);
         setPage(1);
     };
@@ -109,14 +106,12 @@ export default function Page(props) {
         updatedLanguages[index].selected = !updatedLanguages[index].selected;
         setLanguages(updatedLanguages);
         setSelectedLanguages(updatedLanguages);
-        // Reset Load More clicked status
         setLoadMoreClicked(false);
         setPage(1);
     };
 
     const loadmore = () => {
         setPage(page1 => page1 + 1);
-        // Set Load More clicked status
         setLoadMoreClicked(true);
     }
 

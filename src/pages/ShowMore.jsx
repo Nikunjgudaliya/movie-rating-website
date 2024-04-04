@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Button from "../components/Button";
 import Footer from "../components/Footer";
-import { Star, StarBorderOutlined } from "@mui/icons-material";
+import { Star } from "@mui/icons-material";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import axios from 'axios';
 import { Dialog, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material';
@@ -11,14 +11,60 @@ import StarIcon from '@mui/icons-material/Star';
 
 function ShowMore() {
     const { mediaType, id } = useParams();
-    const [content, setContent] = useState({});
+    const [content, setContent] = useState(() => {
+        const savedContent = localStorage.getItem('content');
+        return savedContent ? JSON.parse(savedContent) : {};
+    });
     const [year, setYear] = useState('');
     const [cast, setCast] = useState([]);
     const [crew, setCrew] = useState([]);
     const [trailerKey, setTrailerKey] = useState('');
-    const [username, setUsername] = useState('abc');
+    const [username, setUsername] = useState(() => localStorage.getItem('username') || '');
+    const [userId, setUserId] = useState(() => localStorage.getItem('userId'));
     const [open, setOpen] = useState(false);
     const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState('');
+    const [reviews, setReviews] = useState([]);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        if (!loggedIn) {
+            navigate('/signin');
+        }
+    }, [navigate]);
+
+    useEffect(() => {
+        axios.get('http://localhost:3000/ratings', {
+            params: {
+                mediaId: id
+            }
+        })
+            .then(response => {
+                setReviews(response.data);
+            })
+            .catch(error => console.error('Error fetching reviews:', error));
+    }, [id]);
+
+    useEffect(() => {
+        axios.get('http://localhost:3000/userdata')
+            .then(response => {
+                const userData = response.data;
+                const user = userData.find(user => user.username === username);
+                if (user) {
+                    setUsername(user.username);
+                    setUserId(user.userId);
+                }
+            })
+            .catch(error => console.error('Error fetching user data:', error));
+    }, [username]);
+
+    // Save content and username and userId to localStorage
+    useEffect(() => {
+        localStorage.setItem('content', JSON.stringify(content));
+        localStorage.setItem('username', username);
+        localStorage.setItem('userId', userId);
+    }, [content, username, userId]);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -28,33 +74,38 @@ function ShowMore() {
         setOpen(false);
     };
 
+    const handleCommentChange = (e) => {
+        setComment(e.target.value);
+    };
+
     const handleRate = async () => {
         try {
+            const currentDate = new Date();
+            const currentDay = `${currentDate.getDate()}`;
+            const currentMonth = `${currentDate.toLocaleString('default', { month: 'long' })}`;
+            const currentYear = `${currentDate.getFullYear()}`;
+
             await axios.post('http://localhost:3000/showmore', {
+                userId: userId,
                 username: username,
                 rating: rating,
                 moviename: content.name || content.title,
+                comment: comment,
+                mediaType: mediaType,
+                mediaId: id,
+                day: currentDay,
+                month: currentMonth,
+                year: currentYear
             });
-            alert("Rating added")
+
+            const response = await axios.get(`http://localhost:3000/ratings?mediaId=${id}`);
+            setReviews(response.data);
+
             handleClose();
         } catch (error) {
             console.error('Error submitting rating:', error);
         }
     };
-
-    // Fetch username if user is authenticated
-    useEffect(() => {
-        // Fetch username from MongoDB or your authentication system
-        // Example endpoint: '/api/getUsername'
-        axios.get('/api/getUsername')
-            .then(response => {
-                setUsername(response.data.username || 'abc'); // Set username from response or default to 'abc'
-            })
-            .catch(error => {
-                console.error('Error fetching username:', error);
-            });
-    }, []);
-
 
     const handleStarClick = (index) => {
         setRating(index + 1);
@@ -137,9 +188,18 @@ function ShowMore() {
                                         <Typography align="center" variant="subtitle1">
                                             {rating === 0 ? 'Please select a rating' : `You rated: ${rating} out of 10`}
                                         </Typography>
+                                        <input
+                                            type="text"
+                                            value={comment}
+                                            onChange={handleCommentChange}
+                                            placeholder="Add your comment (optional)"
+                                            className="bg-gray-100 w-full px-3 py-2 mt-4 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                                        />
                                     </DialogContent>
                                     <div className='flex justify-center mb-6' onClick={handleRate}>
-                                        <Button name='Submit' bgColor='blue-600' textColor='white' />
+                                        <button type="submit" className="bg-blue-600 text-white h-[33px] w-[160px] font-bold rounded-[4px] flex justify-center items-center">
+                                            Submit
+                                        </button>
                                     </div>
                                 </Dialog>
 
@@ -268,76 +328,33 @@ function ShowMore() {
                             <span className="ml-2 mr-1 font-bold text-[23px]">Reviews</span>
                             <ArrowForwardIosIcon sx={{ fontSize: "26px" }} className="arrow" />
                         </div>
-                        <div className='absolute right-0'>
-                            <Button name='Give Review' bgColor='blue-600' />
-                        </div>
                     </div>
-                    <div className='mb-5 '>
-                        <div className='flex'>
-                            <div className='p-6 bg-orange-500 h-[50px] w-[50px] text-center flex items-center justify-center rounded-full mr-4'>
-                                F
+                    {reviews.map(review => (
+                        <div className='mb-5 ' key={review._id}>
+                            <div className='flex'>
+                                <div className={`p-6 bg-orange-500 h-[50px] w-[50px] text-center flex items-center justify-center rounded-full mr-4`}>
+                                    {review.username.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <div className='font-bold text-[17px]'>
+                                        {review.username}
+                                    </div>
+                                    <div className='text-[14px] text-gray-400 mb-3'>
+                                        {`${review.day} ${review.month}, ${review.year}`}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='flex mb-3'>
+                                {[...Array(10)].map((_, index) => (
+                                    <Star key={index} className={index < review.rating ? "text-yellow-500" : "text-gray-400"} />
+                                ))}
                             </div>
                             <div>
-                                <div className='font-bold text-[17px]'>
-                                    Floch Forster {/* user name will be shown here */}
-                                </div>
-                                <div className=' text-[14px] text-gray-400 mb-3'>
-                                    January 7, 2024{/* data when review is given will be shown here */}
-                                </div>
+                                {review.comment}
+                                <hr />
                             </div>
                         </div>
-                        <div className='flex mb-3'>
-                            <Star className="text-yellow-500" />
-                            <Star className="text-yellow-500" />
-                            <Star className="text-yellow-500" />
-                            <Star className="text-yellow-500" />
-                            <Star className="text-yellow-500" />
-                            <Star className="text-yellow-500" />
-                            <Star className="text-yellow-500" />
-                            <Star className="text-yellow-500" />
-                            <Star className="text-yellow-500" />
-                            <Star className="text-yellow-500" />
-                        </div>
-                        <div>
-                            He was the best guy around {/* Reviews are shown here*/}
-                            <hr />
-                        </div>
-                    </div>
-                    <div className='mb-5 '>
-                        <div className='flex'>
-                            <div className='p-6 bg-orange-900 h-[50px] w-[50px] text-center flex items-center justify-center rounded-full mr-4'>
-                                R
-                            </div>
-                            <div>
-                                <div className='font-bold text-[17px]'>
-                                    Reiner Braun {/* user name will be shown here */}
-                                </div>
-                                <div className=' text-[14px] text-gray-400 mb-3'>
-                                    January 8, 2024{/* data when review is given will be shown here */}
-                                </div>
-                            </div>
-                        </div>
-                        <div className='flex mb-3'>
-                            <Star className="text-yellow-500" />
-                            <Star className="text-yellow-500" />
-                            <StarBorderOutlined className='text-yellow-500' />
-                            <StarBorderOutlined className='text-yellow-500' />
-                            <StarBorderOutlined className='text-yellow-500' />
-                            <StarBorderOutlined className='text-yellow-500' />
-                            <StarBorderOutlined className='text-yellow-500' />
-                            <StarBorderOutlined className='text-yellow-500' />
-                            <StarBorderOutlined className='text-yellow-500' />
-                            <StarBorderOutlined className='text-yellow-500' />
-
-                        </div>
-                        <div>
-                            What about the people he.....? {/* Reviews are shown here*/}
-                            <hr />
-                        </div>
-                    </div>
-                    <div className='flex justify-center' >
-                        <Button name='Show More' bgColor='blue-600' />
-                    </div>
+                    ))}
                 </div>
                 <Footer />
             </div>

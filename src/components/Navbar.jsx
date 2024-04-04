@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react';
 import { IconButton } from '@mui/material';
-import { NavLink, Link, useLocation } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
-import '../css/Navbar.css';
 import axios from 'axios';
 
 function Navbar() {
     const [isExpanded, setIsExpanded] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
-    const location = useLocation();
-
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleToggleSearch = () => {
         setIsExpanded(!isExpanded);
@@ -20,9 +18,24 @@ function Navbar() {
         setSearchQuery(event.target.value);
     };
 
+    const handleOutsideClick = (event) => {
+        if (!event.target.closest('.search-container')) {
+            setIsExpanded(false);
+        }
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('isLoggedIn');
+        setIsLoggedIn(false);
+    };
+
+    useEffect(() => {
+        const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        setIsLoggedIn(loggedIn);
+    }, []);
+
     useEffect(() => {
         if (searchQuery.trim() !== '') {
-
             axios.get(`https://api.themoviedb.org/3/search/multi?query=${searchQuery}&api_key=4d515835e70ed91238de09e575d7d8b2`)
                 .then(response => {
                     setSearchResults(response.data.results);
@@ -33,23 +46,12 @@ function Navbar() {
         }
     }, [searchQuery]);
 
-    const handleOutsideClick = (event) => {
-        if (!event.target.closest('.search-container')) {
-            setIsExpanded(false);
-        }
-    };
-
-    // Add event listener for outside click
     useEffect(() => {
         document.addEventListener('click', handleOutsideClick);
         return () => {
             document.removeEventListener('click', handleOutsideClick);
         };
     }, []);
-
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, [location]);
 
     return (
         <nav className="h-[100px] w-full bg-black flex items-center justify-between px-20 py-10 mb-[30px] sticky top-0 z-10">
@@ -119,15 +121,20 @@ function Navbar() {
                             )}
                         </>
                     )}
-
                 </div>
                 <IconButton onClick={handleToggleSearch}>
                     <SearchIcon className="text-white mr-10" />
                 </IconButton>
                 <li className='list-none'>
-                    <NavLink to="/signin" activeclassname="active" className="p-1">
-                        Sign In
-                    </NavLink>
+                    {isLoggedIn ? (
+                        <NavLink to="/" onClick={handleLogout} activeclassname="active" className="p-1">
+                            Sign Out
+                        </NavLink>
+                    ) : (
+                        <NavLink to="/signin" activeclassname="active" className="p-1">
+                            Sign In
+                        </NavLink>
+                    )}
                 </li>
             </div>
         </nav>
