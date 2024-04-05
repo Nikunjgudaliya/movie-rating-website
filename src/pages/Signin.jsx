@@ -31,7 +31,7 @@ function SignIn() {
             })
             .catch(error => {
                 console.error('Error logging in:', error);
-                alert('Error logging in. Please try again.');
+                alert('Wrong email or password.');
             });
     };
 

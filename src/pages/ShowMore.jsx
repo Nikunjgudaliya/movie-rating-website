@@ -19,8 +19,8 @@ function ShowMore() {
     const [cast, setCast] = useState([]);
     const [crew, setCrew] = useState([]);
     const [trailerKey, setTrailerKey] = useState('');
-    const [username, setUsername] = useState(() => localStorage.getItem('username') || '');
-    const [userId, setUserId] = useState(() => localStorage.getItem('userId'));
+    const username = localStorage.getItem('username') || '';
+    const userId = localStorage.getItem('userId');
     const [open, setOpen] = useState(false);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
@@ -46,18 +46,18 @@ function ShowMore() {
             .catch(error => console.error('Error fetching reviews:', error));
     }, [id]);
 
-    useEffect(() => {
-        axios.get('http://localhost:3000/userdata')
-            .then(response => {
-                const userData = response.data;
-                const user = userData.find(user => user.username === username);
-                if (user) {
-                    setUsername(user.username);
-                    setUserId(user.userId);
-                }
-            })
-            .catch(error => console.error('Error fetching user data:', error));
-    }, [username]);
+    // useEffect(() => {
+    //     axios.get('http://localhost:3000/userdata')
+    //         .then(response => {
+    //             const userData = response.data;
+    //             const user = userData.find(user => user.username === username);
+    //             if (user) {
+    //                 setUsername(user.username);
+    //                 setUserId(user.userId);
+    //             }
+    //         })
+    //         .catch(error => console.error('Error fetching user data:', error));
+    // }, [username]);
 
     // Save content and username and userId to localStorage
     useEffect(() => {

@@ -25,6 +25,7 @@ function Admin() {
         axios.delete(`http://localhost:3000/admin/users/${userId}`)
             .then(response => {
                 console.log('User deleted successfully');
+                console.log(response);
                 setUsers(prevUsers => prevUsers.filter(user => user.userId !== userId));
             })
             .catch(error => {
